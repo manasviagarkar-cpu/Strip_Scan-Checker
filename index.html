@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StripScan Checker – Milk Adulteration Detector</title>
+  <meta name="description" content="Inclusive, mobile-first food safety and adulteration detection tool for frontline dairy workers and quality managers." />
+  <meta property="og:title" content="StripScan Checker – Milk Adulteration Detector" />
+  <meta property="og:description" content="Frontline milk strip color analysis and quality traceability dashboard." />
+  <meta property="og:type" content="website" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+
+  <!-- App Header & Navigation -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-zone">
+        <div class="brand-icon">S</div>
+        <div>
+          <span class="brand-title" data-i18n="appTitle">StripScan Checker</span>
+          <span class="brand-tag">Dairy Quality</span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- Dual Persona Role Switcher -->
+        <div class="role-switcher" role="tablist">
+          <button id="btnRoleWorker" class="role-btn active" role="tab" data-i18n="workerRole">Worker View</button>
+          <button id="btnRoleManager" class="role-btn" role="tab" data-i18n="managerRole">Manager View</button>
+        </div>
+
+        <!-- Trilingual Language Switcher (EN, HI, MR) -->
+        <div class="lang-selector" aria-label="Language Selector">
+          <button class="lang-btn active" data-lang="en">EN</button>
+          <button class="lang-btn" data-lang="hi">हिंदी</button>
+          <button class="lang-btn" data-lang="mr">मराठी</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Offline Status Banner -->
+  <aside class="status-bar-notice">
+    <div class="status-indicator">
+      <span class="status-dot"></span>
+      <span data-i18n="offlineReady">100% Offline Mode (Local Dairy Storage)</span>
+    </div>
+    <div style="font-size: 0.75rem; color: var(--text-dim);" class="tabular-nums">FSSAI Protocol Compliant</div>
+  </aside>
+
+  <!-- Main Application Content -->
+  <main class="app-main">
+
+    <!-- =====================================================================
+         PERSONA 1: FRONTLINE WORKER VIEW (Mobile-First Ergonomics)
+         ===================================================================== -->
+    <section id="workerPanel" class="view-panel active">
+      <div class="worker-shell">
+        
+        <!-- Worker Header & Progress -->
+        <div class="worker-header">
+          <div class="worker-header-title">
+            <span data-i18n="appSubtitle">Inclusive Milk Adulteration Detector</span>
+            <span id="stepIndicatorText" class="step-indicator">Step 1/4</span>
+          </div>
+          <div class="step-progress-bar">
+            <div id="progSeg1" class="progress-segment done"></div>
+            <div id="progSeg2" class="progress-segment"></div>
+            <div id="progSeg3" class="progress-segment"></div>
+            <div id="progSeg4" class="progress-segment"></div>
+          </div>
+        </div>
+
+        <div class="worker-body">
+
+          <!-- STEP 1: Batch Identification -->
+          <div id="workerStep1">
+            <h2 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem;" data-i18n="step1Title">Step 1: Batch Info</h2>
+
+            <div class="form-group">
+              <label class="form-label" for="batchIdInput" data-i18n="batchIdLabel">Batch ID / Lot No.</label>
+              <input id="batchIdInput" class="form-input tabular-nums" type="text" value="MK-2026-104" required />
+              <div class="form-helper">Unique tracking identifier for this incoming milk vessel.</div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="supplierSelect" data-i18n="supplierLabel">Milk Supplier / Farmer</label>
+              <select id="supplierSelect" class="form-select">
+                <!-- Populated dynamically via JS -->
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="locationInput" data-i18n="locationLabel">Collection Point / Chilling Center</label>
+              <input id="locationInput" class="form-input" type="text" value="Chilling Center #1" />
+            </div>
+
+            <button id="step1NextBtn" class="btn btn-primary" type="button" data-i18n="nextBtn">
+              Next Step &rarr;
+            </button>
+          </div>
+
+          <!-- STEP 2: Pictorial Instructions & Reaction Timer -->
+          <div id="workerStep2" style="display: none;">
+            <h2 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem;" data-i18n="step2Title">Step 2: Dip & Wait</h2>
+
+            <!-- Graphic 1: Fresh Milk Sample -->
+            <div class="instruction-card">
+              <div class="instruction-art">
+                <svg viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Milk Can & Beaker Drawing -->
+                  <rect x="30" y="30" width="50" height="70" rx="6" fill="#cbd5e1" stroke="#475569" stroke-width="3"/>
+                  <rect x="42" y="20" width="26" height="12" rx="2" fill="#94a3b8" stroke="#475569" stroke-width="2"/>
+                  <path d="M120 40 L160 40 L155 100 L125 100 Z" fill="#e0f2fe" stroke="#0284c7" stroke-width="3"/>
+                  <path d="M127 65 L153 65 L151 96 L129 96 Z" fill="#ffffff" />
+                  <path d="M60 45 Q90 20 135 55" stroke="#38bdf8" stroke-width="4" stroke-dasharray="4 4"/>
+                </svg>
+              </div>
+              <div class="instruction-title" data-i18n="instrStep1Title">1. Fresh Sample</div>
+              <p class="instruction-text" data-i18n="instrStep1Desc">Draw 10ml of milk from the intake can into a clean testing cup.</p>
+            </div>
+
+            <!-- Graphic 2: Dipping Strip + Reaction Timer -->
+            <div class="instruction-card">
+              <div class="instruction-art">
+                <svg viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Beaker with dipping test strip -->
+                  <path d="M70 30 L130 30 L122 105 L78 105 Z" fill="#e0f2fe" stroke="#0284c7" stroke-width="3"/>
+                  <rect x="94" y="10" width="12" height="85" rx="2" fill="#f8fafc" stroke="#64748b" stroke-width="2"/>
+                  <rect x="96" y="70" width="8" height="20" fill="#fef08a" stroke="#ca8a04" stroke-width="1.5"/>
+                </svg>
+              </div>
+              <div class="instruction-title" data-i18n="instrStep2Title">2. Dip Chemical Strip</div>
+              <p class="instruction-text" data-i18n="instrStep2Desc">Immerse test pad completely for 3 seconds. Tap edge to shed excess milk.</p>
+
+              <!-- Interactive Reaction Countdown Timer -->
+              <div class="timer-container">
+                <div>
+                  <div style="font-size:0.75rem; color:var(--text-dim); text-align:left;" data-i18n="timerLabel">Reaction Countdown</div>
+                  <div id="timerDigits" class="timer-digits">00:30</div>
+                </div>
+                <button id="timerBtn" class="timer-btn" type="button" data-i18n="startTimer">Start 30s Timer</button>
+              </div>
+            </div>
+
+            <!-- Graphic 3: Positioning on Guide Card -->
+            <div class="instruction-card">
+              <div class="instruction-art">
+                <svg viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Reference Guide Card with central strip -->
+                  <rect x="40" y="15" width="120" height="90" rx="4" fill="#ffffff" stroke="#94a3b8" stroke-width="2"/>
+                  <rect x="85" y="25" width="30" height="70" stroke="#0284c7" stroke-width="2" stroke-dasharray="3 3" fill="#f1f5f9"/>
+                  <rect x="92" y="30" width="16" height="60" rx="1" fill="#f8fafc" stroke="#475569" stroke-width="1.5"/>
+                  <rect x="94" y="45" width="12" height="25" fill="#fef08a"/>
+                </svg>
+              </div>
+              <div class="instruction-title" data-i18n="instrStep3Title">3. Position for Camera</div>
+              <p class="instruction-text" data-i18n="instrStep3Desc">Place strip inside the card outline under direct, non-shadowed light.</p>
+            </div>
+
+            <div class="btn-group">
+              <button id="step2BackBtn" class="btn btn-secondary" type="button" data-i18n="backBtn">&larr; Back</button>
+              <button id="step2NextBtn" class="btn btn-primary" type="button" data-i18n="nextBtn">Open Scanner &rarr;</button>
+            </div>
+          </div>
+
+          <!-- STEP 3: Camera Capture & Calibrated Demo Strips -->
+          <div id="workerStep3" style="display: none;">
+            <h2 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem;" data-i18n="step3Title">Step 3: Strip Scan</h2>
+
+            <div class="camera-box">
+              <div class="viewfinder-frame">
+                <canvas id="previewCanvas"></canvas>
+                <div class="viewfinder-center-guide"></div>
+              </div>
+              <p class="camera-guide-text">Align test strip reaction pad within the blue center guide.</p>
+            </div>
+
+            <!-- Hidden File/Camera Input -->
+            <input id="cameraInput" type="file" accept="image/*" capture="environment" style="display: none;" />
+
+            <div style="margin-top: 1rem;">
+              <button id="openCameraBtn" class="btn btn-primary" type="button" data-i18n="openCameraBtn">
+                📷 Take Photo with Camera
+              </button>
+            </div>
+
+            <!-- Demo Strip Presets (Crucial for live hackathon demonstration) -->
+            <div class="demo-preset-banner">
+              <div class="demo-preset-title">
+                <span data-i18n="orPickPreset">Or Run Calibrated Demo Presets:</span>
+                <span class="demo-preset-tag">For Judges</span>
+              </div>
+              <div class="demo-preset-buttons">
+                <button id="btnPresetSafe" class="preset-strip-btn" type="button">
+                  <div class="preset-color-chip chip-safe"></div>
+                  <span data-i18n="presetSafe">Pure Milk (Safe)</span>
+                </button>
+                <button id="btnPresetSuspicious" class="preset-strip-btn" type="button">
+                  <div class="preset-color-chip chip-warning"></div>
+                  <span data-i18n="presetSuspicious">Diluted / Water</span>
+                </button>
+                <button id="btnPresetReject" class="preset-strip-btn" type="button">
+                  <div class="preset-color-chip chip-danger"></div>
+                  <span data-i18n="presetReject">Urea / Chemical</span>
+                </button>
+              </div>
+            </div>
+
+            <button id="step3BackBtn" class="btn btn-secondary" type="button" data-i18n="backBtn">&larr; Back</button>
+          </div>
+
+          <!-- STEP 4: Traffic Light Verdict & Hold/Release Decision -->
+          <div id="workerStep4" style="display: none;">
+            <h2 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem;" data-i18n="step4Title">Step 4: Result & Action</h2>
+
+            <!-- Verdict Card (Green, Amber, or Red) -->
+            <div id="verdictCard" class="verdict-card verdict-safe">
+              <div id="verdictIcon" class="verdict-icon">✓</div>
+              <div id="verdictTitle" class="verdict-title" data-i18n="verdictSafe">SAFE – Pure Milk</div>
+              <p id="verdictMsg" class="verdict-action-msg" data-i18n="safeAction">Milk meets FSSAI quality standards. OK for bulk chilling tank.</p>
+              
+              <div id="verdictMetrics" class="metrics-strip">
+                <!-- Populated dynamically via JS with sampled RGB values -->
+              </div>
+            </div>
+
+            <!-- Hold / Release Decision Box -->
+            <div class="hold-release-box">
+              <div class="hold-release-title" data-i18n="holdDecisionTitle">Log Reception Decision</div>
+              <div class="hold-release-options">
+                <label class="toggle-option">
+                  <input type="radio" name="holdRelease" value="hold" />
+                  <span class="toggle-label" style="color: var(--status-danger);" data-i18n="holdBatch">HOLD BATCH</span>
+                </label>
+                <label class="toggle-option">
+                  <input type="radio" name="holdRelease" value="release" checked />
+                  <span class="toggle-label" style="color: var(--status-safe);" data-i18n="releaseBatch">RELEASE TO TANK</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Worker Notes -->
+            <div class="form-group">
+              <label class="form-label" for="workerNotesInput" data-i18n="workerNotes">Worker Observations / Notes (Optional)</label>
+              <textarea id="workerNotesInput" class="form-textarea" rows="2" placeholder="e.g. Can lid had minor dust, or smell was typical."></textarea>
+            </div>
+
+            <div class="btn-group">
+              <button id="step4RetakeBtn" class="btn btn-secondary" type="button">Retake</button>
+              <button id="btnConfirmSaveBatch" class="btn btn-primary" type="button" data-i18n="saveBatchBtn">
+                Confirm & Save to Ledger
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         PERSONA 2: QUALITY MANAGER DASHBOARD (Desktop & Tablet)
+         ===================================================================== -->
+    <section id="managerPanel" class="view-panel">
+      <div class="manager-dashboard">
+        
+        <!-- Header Strip -->
+        <div class="dashboard-header">
+          <div>
+            <h1 class="dashboard-title" data-i18n="managerTitle">Dairy Quality & Traceability Dashboard</h1>
+            <p class="dashboard-subtitle" data-i18n="managerSubtitle">Batch audit logs, supplier risk evaluation, and root cause analysis</p>
+          </div>
+          <div class="dashboard-actions">
+            <button class="btn btn-secondary btn-sm" onclick="setRole('worker')">+ Run New Strip Test</button>
+          </div>
+        </div>
+
+        <!-- KPI Metric Cards -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-label" data-i18n="kpiTested">Total Batches Screened</div>
+            <div id="kpiTotalTested" class="kpi-value tabular-nums">0</div>
+            <div class="kpi-sub">Today's collection shifts</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label" data-i18n="kpiSafe">Passed Safe (%)</div>
+            <div id="kpiPassRate" class="kpi-value tabular-nums">0%</div>
+            <div class="kpi-sub">Compliance with purity index</div>
+          </div>
+          <div class="kpi-card danger">
+            <div class="kpi-label" data-i18n="kpiHold">Batches on Hold</div>
+            <div id="kpiHeldBatches" class="kpi-value tabular-nums">0</div>
+            <div class="kpi-sub">Quarantined from bulk storage</div>
+          </div>
+          <div class="kpi-card warning">
+            <div class="kpi-label" data-i18n="kpiHighRisk">High-Risk Suppliers</div>
+            <div id="kpiHighRiskSuppliers" class="kpi-value tabular-nums">0</div>
+            <div class="kpi-sub">Repeat adulteration incidents</div>
+          </div>
+        </div>
+
+        <!-- Supplier Risk Scorecard -->
+        <div class="data-card">
+          <div class="card-top">
+            <h2 class="card-title" data-i18n="tabSuppliers">Supplier Risk Scorecard</h2>
+            <span style="font-size: 0.8rem; color: var(--text-muted);">High Risk threshold: &ge; 30% failure rate</span>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th data-i18n="colSupName">Supplier Name</th>
+                  <th data-i18n="colSupBatches" style="text-align:center;">Total Deliveries</th>
+                  <th style="text-align:center;">Safe / Warn / Reject</th>
+                  <th data-i18n="colSupPassRate" style="text-align:center;">Pass Rate</th>
+                  <th data-i18n="colSupRisk" style="text-align:center;">Risk Level</th>
+                </tr>
+              </thead>
+              <tbody id="supplierScorecardBody">
+                <!-- Rendered dynamically via script.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Batch Traceability Ledger -->
+        <div class="data-card">
+          <div class="card-top">
+            <h2 class="card-title" data-i18n="tabLedger">Batch Traceability Ledger</h2>
+            <div class="filter-bar">
+              <input id="batchSearchInput" class="filter-input" type="search" placeholder="Search Batch ID or Supplier..." data-i18n-ph="searchPlaceholder" />
+              <select id="verdictFilter" class="filter-select">
+                <option value="all" data-i18n="filterAll">All Verdicts</option>
+                <option value="safe" data-i18n="filterSafe">Safe Only</option>
+                <option value="suspicious" data-i18n="filterSuspicious">Suspicious Only</option>
+                <option value="reject" data-i18n="filterReject">Reject Only</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th data-i18n="colBatch">Batch ID</th>
+                  <th data-i18n="colSupplier">Supplier</th>
+                  <th data-i18n="colTime">Date & Time</th>
+                  <th data-i18n="colColor">Strip Color (RGB)</th>
+                  <th data-i18n="colVerdict">Verdict</th>
+                  <th data-i18n="colStatus">Action</th>
+                  <th data-i18n="colActions">Audit / RCA</th>
+                </tr>
+              </thead>
+              <tbody id="traceabilityTableBody">
+                <!-- Rendered dynamically via script.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =====================================================================
+       ROOT CAUSE ANALYSIS (RCA) MODAL
+       ===================================================================== -->
+  <div id="rcaModal" class="modal-backdrop">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title" data-i18n="rcaModalTitle">Root Cause Analysis (RCA) Investigation</h3>
+        <button id="rcaCloseBtn" class="modal-close-btn" type="button">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="background: var(--surface-muted); padding: 0.75rem; border-radius: var(--radius-sm); margin-bottom: 1rem;">
+          <strong data-i18n="rcaBatch">Investigating Batch:</strong>
+          <span id="rcaBatchInfo" class="tabular-nums" style="font-weight: 700; margin-left: 0.4rem;"></span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="rcaCauseSelect" data-i18n="rcaSuspectedCause">Suspected Adulterant / Cause</label>
+          <select id="rcaCauseSelect" class="form-select">
+            <option value="Water Dilution / Density Drop">Water Dilution (Added volume)</option>
+            <option value="Urea / Fertilizer Contamination">Urea / Fertilizer (Inflate SNF reading)</option>
+            <option value="Detergent / Washing Soda Residue">Detergent / Washing Soda Residue (Dirty cans)</option>
+            <option value="Starch / Flour Thickener">Starch / Flour Thickener</option>
+            <option value="Synthetic Neutralizer (Caustic Soda)">Synthetic Neutralizer (Prevent curdling)</option>
+            <option value="Other / Unknown Contaminant">Other / Unknown Contaminant</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="rcaActionInput" data-i18n="rcaActionTaken">Corrective & Preventive Action (CAPA)</label>
+          <textarea id="rcaActionInput" class="form-textarea" rows="3" placeholder="Describe the remediation, supplier notification, or quarantine procedure taken..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="rcaInspectorInput" data-i18n="rcaInspector">Quality Inspector Name</label>
+          <input id="rcaInspectorInput" class="form-input" type="text" value="Inspector Sunil Deshmukh" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="rcaDateInput" data-i18n="rcaClosureDate">Target Closure Date</label>
+          <input id="rcaDateInput" class="form-input" type="date" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="rcaCancelBtn" class="btn btn-secondary btn-sm" type="button" data-i18n="rcaCloseBtn">Cancel</button>
+        <button id="rcaSaveBtn" class="btn btn-primary btn-sm" type="button" data-i18n="rcaSaveBtn">Save RCA Findings</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toastNotice" class="toast-notice"></div>
+
+  <script src="/script.js"></script>
+</body>
+</html>
